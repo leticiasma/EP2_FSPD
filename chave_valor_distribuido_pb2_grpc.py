@@ -95,3 +95,79 @@ def add_ArmazenamentoChaveValorDistribuidoServicer_to_server(servicer, server):
   generic_handler = grpc.method_handlers_generic_handler(
       'ArmazenamentoChaveValorDistribuido', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))
+
+
+class ArmazenamentoChavesServidoresStub(object):
+  """---------------------------------------
+  """
+
+  def __init__(self, channel):
+    """Constructor.
+
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.Registrar = channel.unary_unary(
+        '/ArmazenamentoChavesServidores/Registrar',
+        request_serializer=chave__valor__distribuido__pb2.RegistroChaves.SerializeToString,
+        response_deserializer=chave__valor__distribuido__pb2.NumChavesProcessadas.FromString,
+        )
+    self.Mapear = channel.unary_unary(
+        '/ArmazenamentoChavesServidores/Mapear',
+        request_serializer=chave__valor__distribuido__pb2.Chave.SerializeToString,
+        response_deserializer=chave__valor__distribuido__pb2.StringIDServico.FromString,
+        )
+    self.Terminar = channel.unary_unary(
+        '/ArmazenamentoChavesServidores/Terminar',
+        request_serializer=chave__valor__distribuido__pb2.ParamVazio.SerializeToString,
+        response_deserializer=chave__valor__distribuido__pb2.NumChavesProcessadas.FromString,
+        )
+
+
+class ArmazenamentoChavesServidoresServicer(object):
+  """---------------------------------------
+  """
+
+  def Registrar(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def Mapear(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def Terminar(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+
+def add_ArmazenamentoChavesServidoresServicer_to_server(servicer, server):
+  rpc_method_handlers = {
+      'Registrar': grpc.unary_unary_rpc_method_handler(
+          servicer.Registrar,
+          request_deserializer=chave__valor__distribuido__pb2.RegistroChaves.FromString,
+          response_serializer=chave__valor__distribuido__pb2.NumChavesProcessadas.SerializeToString,
+      ),
+      'Mapear': grpc.unary_unary_rpc_method_handler(
+          servicer.Mapear,
+          request_deserializer=chave__valor__distribuido__pb2.Chave.FromString,
+          response_serializer=chave__valor__distribuido__pb2.StringIDServico.SerializeToString,
+      ),
+      'Terminar': grpc.unary_unary_rpc_method_handler(
+          servicer.Terminar,
+          request_deserializer=chave__valor__distribuido__pb2.ParamVazio.FromString,
+          response_serializer=chave__valor__distribuido__pb2.NumChavesProcessadas.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'ArmazenamentoChavesServidores', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))

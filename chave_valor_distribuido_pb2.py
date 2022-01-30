@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto2',
   serialized_options=None,
-  serialized_pb=_b('\n\x1d\x63have_valor_distribuido.proto\"\x1b\n\x0b\x46lagRetorno\x12\x0c\n\x04\x66lag\x18\x01 \x02(\x05\"+\n\x0b\x43have_Valor\x12\r\n\x05\x63have\x18\x01 \x02(\x05\x12\r\n\x05valor\x18\x02 \x02(\t\"\x16\n\x05\x43have\x12\r\n\x05\x63have\x18\x01 \x02(\x05\"\x16\n\x05Valor\x12\r\n\x05valor\x18\x01 \x02(\t\"$\n\x0fStringIDServico\x12\x11\n\tidServico\x18\x01 \x02(\t\"\x0c\n\nParamVazio2\xb9\x01\n\"ArmazenamentoChaveValorDistribuido\x12%\n\x07Inserir\x12\x0c.Chave_Valor\x1a\x0c.FlagRetorno\x12\x1b\n\tConsultar\x12\x06.Chave\x1a\x06.Valor\x12(\n\x06\x41tivar\x12\x10.StringIDServico\x1a\x0c.FlagRetorno\x12%\n\x08Terminar\x12\x0b.ParamVazio\x1a\x0c.FlagRetorno')
+  serialized_pb=_b('\n\x1d\x63have_valor_distribuido.proto\"\x1b\n\x0b\x46lagRetorno\x12\x0c\n\x04\x66lag\x18\x01 \x02(\x05\"+\n\x0b\x43have_Valor\x12\r\n\x05\x63have\x18\x01 \x02(\x05\x12\r\n\x05valor\x18\x02 \x02(\t\"\x16\n\x05\x43have\x12\r\n\x05\x63have\x18\x01 \x02(\x05\"\x16\n\x05Valor\x12\r\n\x05valor\x18\x01 \x02(\t\"$\n\x0fStringIDServico\x12\x11\n\tidServico\x18\x01 \x02(\t\"\x0c\n\nParamVazio\":\n\x0eRegistroChaves\x12\x18\n\x10\x65nderecoServidor\x18\x01 \x02(\t\x12\x0e\n\x06\x63haves\x18\x02 \x03(\x05\")\n\x14NumChavesProcessadas\x12\x11\n\tnumChaves\x18\x01 \x02(\x05\x32\xb9\x01\n\"ArmazenamentoChaveValorDistribuido\x12%\n\x07Inserir\x12\x0c.Chave_Valor\x1a\x0c.FlagRetorno\x12\x1b\n\tConsultar\x12\x06.Chave\x1a\x06.Valor\x12(\n\x06\x41tivar\x12\x10.StringIDServico\x1a\x0c.FlagRetorno\x12%\n\x08Terminar\x12\x0b.ParamVazio\x1a\x0c.FlagRetorno2\xa8\x01\n\x1d\x41rmazenamentoChavesServidores\x12\x33\n\tRegistrar\x12\x0f.RegistroChaves\x1a\x15.NumChavesProcessadas\x12\"\n\x06Mapear\x12\x06.Chave\x1a\x10.StringIDServico\x12.\n\x08Terminar\x12\x0b.ParamVazio\x1a\x15.NumChavesProcessadas')
 )
 
 
@@ -210,12 +210,83 @@ _PARAMVAZIO = _descriptor.Descriptor(
   serialized_end=205,
 )
 
+
+_REGISTROCHAVES = _descriptor.Descriptor(
+  name='RegistroChaves',
+  full_name='RegistroChaves',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='enderecoServidor', full_name='RegistroChaves.enderecoServidor', index=0,
+      number=1, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='chaves', full_name='RegistroChaves.chaves', index=1,
+      number=2, type=5, cpp_type=1, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=207,
+  serialized_end=265,
+)
+
+
+_NUMCHAVESPROCESSADAS = _descriptor.Descriptor(
+  name='NumChavesProcessadas',
+  full_name='NumChavesProcessadas',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='numChaves', full_name='NumChavesProcessadas.numChaves', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=267,
+  serialized_end=308,
+)
+
 DESCRIPTOR.message_types_by_name['FlagRetorno'] = _FLAGRETORNO
 DESCRIPTOR.message_types_by_name['Chave_Valor'] = _CHAVE_VALOR
 DESCRIPTOR.message_types_by_name['Chave'] = _CHAVE
 DESCRIPTOR.message_types_by_name['Valor'] = _VALOR
 DESCRIPTOR.message_types_by_name['StringIDServico'] = _STRINGIDSERVICO
 DESCRIPTOR.message_types_by_name['ParamVazio'] = _PARAMVAZIO
+DESCRIPTOR.message_types_by_name['RegistroChaves'] = _REGISTROCHAVES
+DESCRIPTOR.message_types_by_name['NumChavesProcessadas'] = _NUMCHAVESPROCESSADAS
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 FlagRetorno = _reflection.GeneratedProtocolMessageType('FlagRetorno', (_message.Message,), dict(
@@ -260,6 +331,20 @@ ParamVazio = _reflection.GeneratedProtocolMessageType('ParamVazio', (_message.Me
   ))
 _sym_db.RegisterMessage(ParamVazio)
 
+RegistroChaves = _reflection.GeneratedProtocolMessageType('RegistroChaves', (_message.Message,), dict(
+  DESCRIPTOR = _REGISTROCHAVES,
+  __module__ = 'chave_valor_distribuido_pb2'
+  # @@protoc_insertion_point(class_scope:RegistroChaves)
+  ))
+_sym_db.RegisterMessage(RegistroChaves)
+
+NumChavesProcessadas = _reflection.GeneratedProtocolMessageType('NumChavesProcessadas', (_message.Message,), dict(
+  DESCRIPTOR = _NUMCHAVESPROCESSADAS,
+  __module__ = 'chave_valor_distribuido_pb2'
+  # @@protoc_insertion_point(class_scope:NumChavesProcessadas)
+  ))
+_sym_db.RegisterMessage(NumChavesProcessadas)
+
 
 
 _ARMAZENAMENTOCHAVEVALORDISTRIBUIDO = _descriptor.ServiceDescriptor(
@@ -268,8 +353,8 @@ _ARMAZENAMENTOCHAVEVALORDISTRIBUIDO = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=208,
-  serialized_end=393,
+  serialized_start=311,
+  serialized_end=496,
   methods=[
   _descriptor.MethodDescriptor(
     name='Inserir',
@@ -311,5 +396,47 @@ _ARMAZENAMENTOCHAVEVALORDISTRIBUIDO = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_ARMAZENAMENTOCHAVEVALORDISTRIBUIDO)
 
 DESCRIPTOR.services_by_name['ArmazenamentoChaveValorDistribuido'] = _ARMAZENAMENTOCHAVEVALORDISTRIBUIDO
+
+
+_ARMAZENAMENTOCHAVESSERVIDORES = _descriptor.ServiceDescriptor(
+  name='ArmazenamentoChavesServidores',
+  full_name='ArmazenamentoChavesServidores',
+  file=DESCRIPTOR,
+  index=1,
+  serialized_options=None,
+  serialized_start=499,
+  serialized_end=667,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='Registrar',
+    full_name='ArmazenamentoChavesServidores.Registrar',
+    index=0,
+    containing_service=None,
+    input_type=_REGISTROCHAVES,
+    output_type=_NUMCHAVESPROCESSADAS,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Mapear',
+    full_name='ArmazenamentoChavesServidores.Mapear',
+    index=1,
+    containing_service=None,
+    input_type=_CHAVE,
+    output_type=_STRINGIDSERVICO,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Terminar',
+    full_name='ArmazenamentoChavesServidores.Terminar',
+    index=2,
+    containing_service=None,
+    input_type=_PARAMVAZIO,
+    output_type=_NUMCHAVESPROCESSADAS,
+    serialized_options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_ARMAZENAMENTOCHAVESSERVIDORES)
+
+DESCRIPTOR.services_by_name['ArmazenamentoChavesServidores'] = _ARMAZENAMENTOCHAVESSERVIDORES
 
 # @@protoc_insertion_point(module_scope)

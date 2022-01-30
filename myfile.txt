@@ -1,8 +1,0 @@
-I,23 ,teamo
-I,23,oi
-C,23
-A,qualquercoisa
-I,1,teste
-C,1
-K
-T
