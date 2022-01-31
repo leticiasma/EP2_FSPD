@@ -3,45 +3,51 @@ import grpc
 import sys
 import threading
 
-import chave_valor_distribuido_pb2
-import chave_valor_distribuido_pb2_grpc
+import armazenamento_chave_valor_distribuido_pb2
+import armazenamento_chave_valor_distribuido_pb2_grpc
+#----------------------------------------------------
 
-class ArmazenamentoChavesServidores(chave_valor_distribuido_pb2_grpc.ArmazenamentoChavesServidoresServicer):
-    def __init__(self, stop_event):
-        self.servidorChaves = {}
-        self._stop_event = stop_event
+class ServidorCombinaServidores(armazenamento_chave_valor_distribuido_pb2_grpc.ServidorCombinaServidoresServicer):
+    def __init__(self, eventoDeParada):
+        self.paresChaveServidor = {}
+        self.eventoDeParada = eventoDeParada
+        self.servidoresDeArmazenamento = [] #Guardará no máximo 10 servidores que armazenam pares chave-valor
     
+    #O parâmetro servidor_chaves contém o identificador do servidor e as chaves que ele têm armazenadas naquele momento
     def Registrar(self, servidor_chaves, context):
-        for chave in servidor_chaves.chaves:
-            self.servidorChaves[chave] = servidor_chaves.enderecoServidor
-        return chave_valor_distribuido_pb2.NumChavesProcessadas(numChaves=len(servidor_chaves.chaves))
+        if servidor_chaves.endServidorArmazenamento in self.servidoresDeArmazenamento or len(self.servidoresDeArmazenamento) < 10:
+            if servidor_chaves.endServidorArmazenamento not in self.servidoresDeArmazenamento:
+                self.servidoresDeArmazenamento.append(servidor_chaves.endServidorArmazenamento)
+
+            for chave in servidor_chaves.chaves:
+                self.paresChaveServidor[chave] = servidor_chaves.endServidorArmazenamento
+            return armazenamento_chave_valor_distribuido_pb2.NumChavesProcessadas(numChaves=len(servidor_chaves.chaves))
 
     def Mapear(self, chave, context):
-        if chave.chave in self.servidorChaves:
-            return chave_valor_distribuido_pb2.StringIDServico(idServico=self.servidorChaves[chave.chave])
+        if chave.chave in self.paresChaveServidor:
+            return armazenamento_chave_valor_distribuido_pb2.StringIDServico(idServico=self.paresChaveServidor[chave.chave])
         else:
-            return chave_valor_distribuido_pb2.StringIDServico(idServico="")
+            #Caso o um servidor com aquela chave não tenha sido encontrado
+            return armazenamento_chave_valor_distribuido_pb2.StringIDServico(idServico="")
 
     def Terminar(self, paramVazio, context):
-        self._stop_event.set()
-        return chave_valor_distribuido_pb2.FlagRetorno(flag=0)        
+        self.eventoDeParada.set()
+        return armazenamento_chave_valor_distribuido_pb2.FlagRetorno(flag=0)        
 
-def server(serverPort):
-    stop_event = threading.Event()
+def executaServidor(portaDoServidor):
+    eventoDeParada = threading.Event()
 
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    chave_valor_distribuido_pb2_grpc.add_ArmazenamentoChavesServidoresServicer_to_server(
-        ArmazenamentoChavesServidores(stop_event), server)
-    server.add_insecure_port(f'[::]:{serverPort}')
-    server.start()
-    stop_event.wait()
-    server.stop(grace=1)
-
+    executaServidor = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    armazenamento_chave_valor_distribuido_pb2_grpc.add_ServidorCombinaServidoresServicer_to_server(ServidorCombinaServidores(eventoDeParada), executaServidor)
+    executaServidor.add_insecure_port(f'[::]:{portaDoServidor}')
+    executaServidor.start()
+    eventoDeParada.wait()
+    executaServidor.stop(grace=1)
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         exit()
 
-    serverPort = sys.argv[1]
+    portaDoServidor = sys.argv[1]
 
-    server(serverPort)
+    executaServidor(portaDoServidor)

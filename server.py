@@ -4,70 +4,71 @@ import sys
 import threading
 import socket
 
-import chave_valor_distribuido_pb2
-import chave_valor_distribuido_pb2_grpc
+import armazenamento_chave_valor_distribuido_pb2
+import armazenamento_chave_valor_distribuido_pb2_grpc
+#----------------------------------------------------
 
-class ArmazenamentoChaveValorDistribuido(chave_valor_distribuido_pb2_grpc.ArmazenamentoChaveValorDistribuidoServicer):
-    def __init__(self, stop_event, qtdArgumentos, idServidorNaRede):
+class ServidorDeParesChaveValor(armazenamento_chave_valor_distribuido_pb2_grpc.ServidorDeParesChaveValorServicer):
+    def __init__(self, eventoDeParada, qtdArgumentos, idServidorNaRede):
         self.paresChaveValor = {}
-        self._stop_event = stop_event
+        self.eventoDeParada = eventoDeParada
         self.qtdArgumentos = qtdArgumentos
         self.idServidorNaRede = idServidorNaRede
     
     def Inserir(self, chave_valor, context):
         if chave_valor.chave in self.paresChaveValor:
-            return chave_valor_distribuido_pb2.FlagRetorno(flag=-1)
+            return armazenamento_chave_valor_distribuido_pb2.FlagRetorno(flag=-1)
         else:
             self.paresChaveValor[chave_valor.chave] = chave_valor.valor
-            return chave_valor_distribuido_pb2.FlagRetorno(flag=0)
+            return armazenamento_chave_valor_distribuido_pb2.FlagRetorno(flag=0)
 
     def Consultar(self, chave, context):
         if chave.chave in self.paresChaveValor:
-            return chave_valor_distribuido_pb2.Valor(valor=self.paresChaveValor[chave.chave])
+            return armazenamento_chave_valor_distribuido_pb2.Valor(valor=self.paresChaveValor[chave.chave])
         else:
-            return chave_valor_distribuido_pb2.Valor(valor="")
+            return armazenamento_chave_valor_distribuido_pb2.Valor(valor="")
 
     def Ativar(self, idServico, context):
         if self.qtdArgumentos == 2:
-            return chave_valor_distribuido_pb2.FlagRetorno(flag=0)
+            return armazenamento_chave_valor_distribuido_pb2.FlagRetorno(flag=0)
         else:
             with grpc.insecure_channel(idServico.idServico) as channel:
-                stub = chave_valor_distribuido_pb2_grpc.ArmazenamentoChavesServidoresStub(channel)
+                stub = armazenamento_chave_valor_distribuido_pb2_grpc.ServidorCombinaServidoresStub(channel)
 
-                parametro = chave_valor_distribuido_pb2.RegistroChaves(enderecoServidor=self.idServidorNaRede)
+                parametro = armazenamento_chave_valor_distribuido_pb2.RegistroChaves(endServidorArmazenamento=self.idServidorNaRede)
                 for chave in self.paresChaveValor.keys():
                     parametro.chaves.append(chave)
 
                 numChavesProcessadas = stub.Registrar(parametro)
 
-                return chave_valor_distribuido_pb2.FlagRetorno(flag=numChavesProcessadas.numChaves)
+                return armazenamento_chave_valor_distribuido_pb2.FlagRetorno(flag=numChavesProcessadas.numChaves)
 
     def Terminar(self, paramVazio, context):
-        self._stop_event.set()
-        return chave_valor_distribuido_pb2.FlagRetorno(flag=0)        
+        self.eventoDeParada.set()
+        return armazenamento_chave_valor_distribuido_pb2.FlagRetorno(flag=0)        
 
-def server(serverPort, qtdArgumentos):
-    stop_event = threading.Event()
+def executaServidor(portaDoServidor, qtdArgumentos):
+    eventoDeParada = threading.Event()
+    identificacaoServidor = socket.getfqdn()
 
-    serverHostName = socket.getfqdn()
+    idServidorNaRede = identificacaoServidor+":"+portaDoServidor
 
-    idServidorNaRede = serverHostName+":"+serverPort
-
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    chave_valor_distribuido_pb2_grpc.add_ArmazenamentoChaveValorDistribuidoServicer_to_server(
-        ArmazenamentoChaveValorDistribuido(stop_event, qtdArgumentos, idServidorNaRede), server)
-    server.add_insecure_port(f'[::]:{serverPort}')
-    server.start()
-    stop_event.wait()
-    server.stop(grace=1)
+    executaServidor = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    armazenamento_chave_valor_distribuido_pb2_grpc.add_ServidorDeParesChaveValorServicer_to_server(
+        ServidorDeParesChaveValor(eventoDeParada, qtdArgumentos, idServidorNaRede), executaServidor)
+    executaServidor.add_insecure_port(f'[::]:{portaDoServidor}')
+    executaServidor.start()
+    eventoDeParada.wait()
+    executaServidor.stop(grace=1)
 
 
 if __name__ == '__main__':
-    qtdArgumentos = len(sys.argv)
+    #Não sei se tem isso mesmo
+    qtdArgumentos = len(sys.argv) #Quantidade de argumentos passados como parâmetro na entrada 
 
     if qtdArgumentos < 2 or qtdArgumentos > 3:
         exit()
 
-    serverPort = sys.argv[1]
+    portaDoServidor = sys.argv[1]
 
-    server(serverPort, qtdArgumentos)
+    executaServidor(portaDoServidor, qtdArgumentos)

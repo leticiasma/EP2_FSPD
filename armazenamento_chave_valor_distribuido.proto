@@ -1,0 +1,55 @@
+syntax = "proto2";
+
+//---------------------------------------------------------
+//COMANDOS E MENSAGENS TROCADAS ENTRE CLIENTES E SERVIDORES
+//---------------------------------------------------------
+
+//Comandos da "Primeira parte: um servidor de pares (chave,valor)"
+service ServidorDeParesChaveValor{
+    rpc Inserir(Chave_Valor) returns (FlagRetorno);    
+    rpc Consultar(Chave) returns (Valor);
+    rpc Ativar(StringIDServico) returns (FlagRetorno);
+    rpc Terminar(ParamVazio) returns (FlagRetorno);
+}
+
+//Segunda "Segunda parte: um servidor que combina servidores"
+service ServidorCombinaServidores{
+    rpc Registrar(RegistroChaves) returns (NumChavesProcessadas);  
+    rpc Mapear(Chave) returns (StringIDServico);
+    rpc Terminar(ParamVazio) returns (NumChavesProcessadas); //Neste caso, o NumChavesProcessadas é o total
+}
+
+//--------------------------------
+//Mensagens que podem ser trocadas
+
+message Chave_Valor{
+    required int32 chave = 1;
+    required string valor = 2;
+}
+
+message Valor{
+    required string valor = 1;
+}
+
+message FlagRetorno{
+    required int32 flag = 1;
+}
+
+message Chave{
+    required int32 chave = 1;
+}
+
+message StringIDServico{
+    required string idServico = 1;
+}
+
+message ParamVazio{}
+
+message RegistroChaves{
+    required string endServidorArmazenamento = 1;
+    repeated int32 chaves = 2;
+}
+
+message NumChavesProcessadas{
+    required int32 numChaves = 1;
+}
